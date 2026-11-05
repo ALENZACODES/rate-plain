@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Rate Plain charts Bank of Canada policy and bond yields and turns a household renewal date into plain next steps." />
+  <title>Rate Plain · Public rates in plain language</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .kpis { display: grid; gap: 0.75rem; grid-template-columns: 1fr 1fr; margin: 0.75rem 0 1rem; }
+    .kpi { background: var(--soft); border-radius: 10px; padding: 0.75rem 0.9rem; }
+    .kpi .num { font-size: 1.6rem; font-weight: 800; color: var(--penn-blue); }
+    .kpi.alt .num { color: var(--penn-red); }
+    canvas { width: 100%; height: 260px; display: block; background: #fff; border: 1px solid var(--border); border-radius: 8px; }
+    .legend-inline { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.4rem 0 0.8rem; font-size: 0.92rem; }
+    .dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; display: inline-block; margin-right: 0.3rem; }
+    .dot.blue { background: #011F5B; }
+    .dot.red { background: #990000; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header class="banner">
+    <div class="banner-inner">
+      <h1>Rate Plain</h1>
+      <p>One screen with public Bank of Canada rates and a plain-language checklist for a household renewal date. General information only.</p>
+      <span class="pill">Built for Code for Change</span>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+    <section class="card">
+      <h2>Public rates</h2>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="meta">BoC policy rate (V39079)</div>
+          <div class="num" id="kpi-policy">—</div>
+          <div class="meta" id="kpi-policy-date"></div>
+        </div>
+        <div class="kpi alt">
+          <div class="meta">5-year benchmark bond yield</div>
+          <div class="num" id="kpi-bond">—</div>
+          <div class="meta" id="kpi-bond-date"></div>
+        </div>
+      </div>
+      <div class="legend-inline" aria-hidden="true">
+        <span><i class="dot blue"></i>Policy rate</span>
+        <span><i class="dot red"></i>5-year benchmark bond yield</span>
+      </div>
+      <canvas id="chart" role="img" aria-label="Line chart of Bank of Canada policy rate and 5-year benchmark bond yield since 2020"></canvas>
+      <p id="source-line" class="meta"></p>
+    </section>
+
+    <section class="card" style="margin-top:1rem;">
+      <h2>Your renewal scenario</h2>
+      <p class="meta">Numbers stay on your device. Nothing is uploaded.</p>
+      <div class="row three">
+        <div>
+          <label for="balance">Balance (CAD)</label>
+          <input id="balance" type="number" min="0" step="1000" value="450000" />
+        </div>
+        <div>
+          <label for="current-rate">Current rate (%)</label>
+          <input id="current-rate" type="number" min="0" step="0.01" value="2.89" />
+        </div>
+        <div>
+          <label for="renewal-date">Renewal date</label>
+          <input id="renewal-date" type="date" />
+        </div>
+      </div>
+      <div id="story" class="result" aria-live="polite"></div>
+    </section>
+
+    <section class="card" style="margin-top:1rem;">
+      <h2>Data sources</h2>
+      <ul>
+        <li><a href="https://www.bankofcanada.ca/valet/observations/V39079/json" rel="noopener noreferrer">Bank of Canada Valet · V39079 (policy rate)</a></li>
+        <li><a href="https://www.bankofcanada.ca/valet/observations/BD.CDN.5YR.DQ.YLD/json" rel="noopener noreferrer">Bank of Canada Valet · BD.CDN.5YR.DQ.YLD (5-year benchmark bond yield)</a></li>
+        <li><a href="https://www.bankofcanada.ca/terms/" rel="noopener noreferrer">Bank of Canada terms of use</a></li>
+      </ul>
+    </section>
+    <p class="footnote">Rate Plain · MIT License · Built by John Khan for Code for Change · Not advice</p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

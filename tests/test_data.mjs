@@ -1,0 +1,13 @@
+import { readFileSync } from "node:fs";
+import assert from "node:assert/strict";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const policy = JSON.parse(readFileSync(join(root, "data/policy-rate.json"), "utf8"));
+const bond = JSON.parse(readFileSync(join(root, "data/bond-5yr.json"), "utf8"));
+assert.equal(policy.source.series, "V39079");
+assert.equal(bond.source.series, "BD.CDN.5YR.DQ.YLD");
+assert.ok(policy.observations.length > 50);
+assert.equal(policy.observations.at(-1).v, 2.5);
+assert.equal(bond.observations.at(-1).v, 3.49);
+console.log("Rate Plain tests passed.");
