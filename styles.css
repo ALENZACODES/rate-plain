@@ -1,6 +1,6 @@
 :root {
-  --penn-blue: #011F5B;
-  --penn-red: #990000;
+  --blue: #011F5B;
+  --red: #990000;
   --white: #ffffff;
   --ink: #121212;
   --muted: #445066;
@@ -24,7 +24,7 @@ body {
   background: var(--white);
   line-height: 1.55;
 }
-a { color: var(--penn-blue); }
+a { color: var(--blue); }
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
@@ -33,14 +33,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   position: absolute;
   left: -999px;
   top: 0;
-  background: var(--penn-blue);
+  background: var(--blue);
   color: var(--white);
   padding: 0.6rem 1rem;
   z-index: 10;
 }
 .skip:focus { left: 0.5rem; top: 0.5rem; }
 .banner {
-  background: var(--penn-blue);
+  background: var(--blue);
   color: var(--white);
   padding: 1.25rem 1rem 1.5rem;
 }
@@ -57,7 +57,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .pill {
   display: inline-block;
   margin-top: 0.85rem;
-  background: var(--penn-red);
+  background: var(--red);
   color: var(--white);
   border-radius: 999px;
   padding: 0.3rem 0.8rem;
@@ -82,12 +82,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .card h2 {
   margin: 0 0 0.6rem;
-  color: var(--penn-blue);
+  color: var(--blue);
   font-size: 1.2rem;
 }
 .card h3 {
   margin: 1rem 0 0.4rem;
-  color: var(--penn-blue);
+  color: var(--blue);
   font-size: 1.05rem;
 }
 .now {
@@ -107,7 +107,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .badge.off { background: var(--off); }
 .badge.mid { background: #b36b00; }
-.badge.on { background: var(--penn-red); }
+.badge.on { background: var(--red); }
 .badge.ultra { background: #0b5e8a; }
 .meta { color: var(--muted); font-size: 0.95rem; }
 .timeline {
@@ -126,7 +126,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .slot.on { background: #f0b4b4; }
 .slot.ultra { background: #b9dff0; }
 .slot[aria-current="true"] {
-  outline: 3px solid var(--penn-blue);
+  outline: 3px solid var(--blue);
   outline-offset: 1px;
 }
 .legend {
@@ -152,7 +152,7 @@ label {
   display: block;
   font-weight: 600;
   margin: 0.7rem 0 0.25rem;
-  color: var(--penn-blue);
+  color: var(--blue);
 }
 input, select, button {
   font: inherit;
@@ -188,13 +188,13 @@ button {
   font-weight: 700;
 }
 button.primary {
-  background: var(--penn-blue);
+  background: var(--blue);
   color: var(--white);
 }
 button.secondary {
   background: var(--white);
-  color: var(--penn-blue);
-  border: 2px solid var(--penn-blue);
+  color: var(--blue);
+  border: 2px solid var(--blue);
 }
 button:disabled {
   opacity: 0.55;
@@ -206,7 +206,7 @@ button:disabled {
   border-radius: 10px;
   padding: 0.9rem 1rem;
 }
-.result strong { color: var(--penn-blue); }
+.result strong { color: var(--blue); }
 .save {
   color: var(--off);
   font-weight: 800;
@@ -224,7 +224,7 @@ th, td {
   border-bottom: 1px solid var(--border);
   vertical-align: top;
 }
-th { color: var(--penn-blue); }
+th { color: var(--blue); }
 .sr-only {
   position: absolute;
   width: 1px;
@@ -247,7 +247,7 @@ th { color: var(--penn-blue); }
   border-radius: 4px;
 }
 .alert {
-  border-left: 4px solid var(--penn-red);
+  border-left: 4px solid var(--red);
   background: #fff5f5;
   padding: 0.7rem 0.9rem;
   margin: 0.75rem 0;

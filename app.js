@@ -73,62 +73,67 @@
     });
   }
 
-  function monthsUntil(renewalDateStr) {
-    const now = new Date();
-    const target = new Date(renewalDateStr + "T12:00:00");
-    const months =
-      (target.getFullYear() - now.getFullYear()) * 12 +
-      (target.getMonth() - now.getMonth());
-    return months;
-  }
+  const L = window.RatePlainLib;
 
   function plainStory() {
     const balance = Number(document.getElementById("balance").value) || 0;
     const currentRate = Number(document.getElementById("current-rate").value) || 0;
+    const offeredRaw = document.getElementById("offered-rate").value;
+    const years = Number(document.getElementById("years-left").value) || 0;
     const renewal = document.getElementById("renewal-date").value;
-    const policy = last(POLICY.observations).v;
-    const bond = last(BOND5.observations).v;
-    const m = monthsUntil(renewal);
-    const policyDate = last(POLICY.observations).d;
-
-    // Illustrative payment change using a simple interest-only monthly sketch on the balance.
-    // Disclosed as illustrative, not advice.
-    const oldMonthly = (balance * (currentRate / 100)) / 12;
-    const newAtBond = (balance * (bond / 100)) / 12;
-    const delta = newAtBond - oldMonthly;
+    const policyPt = L.latest(POLICY.observations);
+    const bondPt = L.latest(BOND5.observations);
+    const today = new Date().toISOString().slice(0, 10);
+    const m = renewal ? L.monthsBetween(today, renewal) : null;
+    const bondYear = L.yearChange(BOND5.observations);
 
     const when =
-      m <= 0
-        ? "Your renewal date is today or has passed on this calendar."
+      m === null
+        ? "Enter the renewal date from your letter to see how much time you have."
+        : m < 0
+        ? "The renewal date you entered has already passed."
+        : m === 0
+        ? "Your renewal date is less than a month away."
         : m === 1
         ? "You have about 1 month until the renewal date you entered."
         : `You have about ${m} months until the renewal date you entered.`;
 
-    const direction =
-      delta > 25
-        ? `If a new rate near the latest 5-year benchmark bond yield (${bond.toFixed(2)}%) applied to the same balance, a simple interest-only sketch would be about $${Math.abs(delta).toFixed(0)} higher per month than your current rate sketch.`
-        : delta < -25
-        ? `If a new rate near the latest 5-year benchmark bond yield (${bond.toFixed(2)}%) applied to the same balance, a simple interest-only sketch would be about $${Math.abs(delta).toFixed(0)} lower per month than your current rate sketch.`
-        : `A simple interest-only sketch near the latest 5-year benchmark bond yield (${bond.toFixed(2)}%) lands close to your current rate sketch.`;
+    let paymentLine;
+    if (offeredRaw === "") {
+      paymentLine = "Type the rate offered in your renewal letter to compare monthly payments.";
+    } else {
+      const offered = Number(offeredRaw);
+      const c = L.compare(balance, currentRate, offered, years);
+      const dir = c.delta > 0.5 ? "higher" : c.delta < -0.5 ? "lower" : "about the same";
+      paymentLine =
+        dir === "about the same"
+          ? `At ${offered.toFixed(2)}% over ${years} years, the monthly payment is about the same as at ${currentRate.toFixed(2)}% (${L.money(c.now)}).`
+          : `At ${offered.toFixed(2)}% over ${years} years, the monthly payment would be about ${L.money(c.next)}, which is ${L.money(c.delta)} ${dir} than ${L.money(c.now)} at ${currentRate.toFixed(2)}%. Over a year that is about ${L.money(c.yearly)}.`;
+    }
+
+    const bondLine = bondYear
+      ? `The 5-year benchmark bond yield was ${bondPt.v.toFixed(2)}% on ${bondPt.d}, compared with ${bondYear.from.v.toFixed(2)}% on ${bondYear.from.d}. Five-year fixed offers often move with this yield, though each lender sets its own rate.`
+      : `The 5-year benchmark bond yield was ${bondPt.v.toFixed(2)}% on ${bondPt.d}.`;
 
     document.getElementById("story").innerHTML = `
-      <p><strong>Policy rate context.</strong> The Bank of Canada target for the overnight rate was <strong>${policy.toFixed(2)}%</strong> on <strong>${policyDate}</strong> (series V39079).</p>
+      <p><strong>Policy rate context.</strong> The Bank of Canada target for the overnight rate was <strong>${policyPt.v.toFixed(2)}%</strong> on <strong>${policyPt.d}</strong> (series V39079).</p>
+      <p><strong>Bond yield context.</strong> ${bondLine}</p>
       <p><strong>Your timeline.</strong> ${when}</p>
+      <p><strong>Payment check.</strong> ${paymentLine}</p>
       <p><strong>Plain next steps (general information only).</strong></p>
       <ol>
-        <li>Find your renewal letter and write down the date, the balance, and any rate options listed.</li>
-        <li>Compare those options to public benchmarks such as the BoC policy rate and the 5-year benchmark bond yield shown here.</li>
-        <li>If the numbers are unclear, ask your lender to explain each option in writing before you sign.</li>
-        <li>Build a buffer for the first months after renewal in case the payment rises.</li>
+        <li>Find your renewal letter and write down the date, the balance, and every rate and term it lists.</li>
+        <li>Put each offered rate into the box above to see the monthly change before you choose.</li>
+        <li>If an option is unclear, ask your lender to explain it in writing before you sign.</li>
+        <li>If the payment goes up, plan a buffer for the first months after renewal.</li>
       </ol>
-      <p>${direction}</p>
-      <p class="meta">This page is general public information using Bank of Canada series. It is not advice, not an offer, and not a payment quote. Real payments depend on amortization, product type and lender terms.</p>
+      <p class="meta">This page is general public information using Bank of Canada series. It is not advice, not an offer, and not a payment quote. Payments use the usual Canadian fixed rate convention of semi-annual compounding. Real payments depend on your lender's terms, fees, and payment frequency.</p>
     `;
 
-    document.getElementById("kpi-policy").textContent = policy.toFixed(2) + "%";
-    document.getElementById("kpi-bond").textContent = bond.toFixed(2) + "%";
-    document.getElementById("kpi-policy-date").textContent = "as of " + policyDate;
-    document.getElementById("kpi-bond-date").textContent = "as of " + last(BOND5.observations).d;
+    document.getElementById("kpi-policy").textContent = policyPt.v.toFixed(2) + "%";
+    document.getElementById("kpi-bond").textContent = bondPt.v.toFixed(2) + "%";
+    document.getElementById("kpi-policy-date").textContent = "as of " + policyPt.d;
+    document.getElementById("kpi-bond-date").textContent = "as of " + bondPt.d;
   }
 
   async function init() {
@@ -137,7 +142,7 @@
     const canvas = document.getElementById("chart");
     drawChart(canvas, POLICY.observations, BOND5.observations);
     window.addEventListener("resize", () => drawChart(canvas, POLICY.observations, BOND5.observations));
-    ["balance", "current-rate", "renewal-date"].forEach((id) =>
+    ["balance", "current-rate", "offered-rate", "years-left", "renewal-date"].forEach((id) =>
       document.getElementById(id).addEventListener("input", plainStory)
     );
     // default renewal ~6 months out
@@ -146,10 +151,9 @@
     document.getElementById("renewal-date").value = d.toISOString().slice(0, 10);
     plainStory();
     document.getElementById("source-line").textContent =
-      `Cached from ${POLICY.source.name} on ${POLICY.source.retrievedEt} ET. Live URLs cited below.`;
+      `Daily values since 2020 from the ${POLICY.source.name}, saved on ${POLICY.source.retrievedEt} (Toronto time). Source links are below.`;
   }
 
-  window.RatePlain = { monthsUntil };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => init().catch(console.error));
