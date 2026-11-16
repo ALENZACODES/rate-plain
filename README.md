@@ -43,6 +43,27 @@ Rebuilds `data/policy-rate.json` and `data/bond-5yr.json` from the Valet API. Th
 
 Monthly payment on a fixed rate balance, with the annual rate compounded twice a year, which is the usual convention for Canadian fixed rate mortgages. Real payments depend on your lender's terms, fees and payment frequency.
 
+## Project structure
+
+```text
+rate-plain/
+├── data/                 # Bank of Canada series
+│   ├── bond-5yr.json     # 5-year bond yield
+│   └── policy-rate.json  # Policy rate
+├── scripts/
+│   └── refresh_data.py   # Rebuilds data/*.json from the Bank of Canada Valet API
+├── tests/                # Automated tests
+│   └── test_data.mjs
+├── app.js                # Interface logic
+├── DEMO-SCRIPT.md        # Demo video script
+├── DEVPOST.md            # Submission write-up
+├── index.html            # Page markup
+├── lib.js                # Pure helpers (browser and Node)
+├── LICENSE               # Licence
+├── README.md             # This file
+└── styles.css            # Styles
+```
+
 ## Data sources
 
 - [Bank of Canada Valet, V39079](https://www.bankofcanada.ca/valet/observations/V39079/json), target for the overnight rate
